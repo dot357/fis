@@ -52,7 +52,16 @@
       
       </div>
       <div class="notes">
-        <h2>Notes</h2>
+        <div class="container">
+        <h2>Notes :</h2>
+        <textarea name="" placeholder="Please add your notes"></textarea>
+        </div>
+
+        <div class="container">
+        <h2>Terms & Conditions :</h2>
+        <textarea name="" placeholder="Please add your terms and conditions" ></textarea>
+        </div>
+
       </div>
     </form>
   </section>
@@ -64,7 +73,7 @@ export default {
   data() {
     return {
       fis: {
-        test :'Your company'
+        test :'F.I.S.'
       },
     }
   },
@@ -73,6 +82,15 @@ export default {
 </script>
 
 <style>
+
+
+.getLost{
+  position: absolute;
+  z-index: -999;
+  opacity: 0;
+  pointer-events: none;
+}
+
 form {
   min-height: 100vh;
   background: white;
@@ -84,6 +102,11 @@ form {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: flex-start;
+}
+
+form > div{
+  margin: 25px 0;
+  border: 1px solid rgba(0, 0, 0, 0.178);
 }
 
 form  input{
@@ -103,12 +126,6 @@ form  input::placeholder{
   
 }
 
-.getLost{
-  position: absolute;
-  z-index: -999;
-  opacity: 0;
-  pointer-events: none;
-}
 
 
 
@@ -187,6 +204,34 @@ form > .header .left > .theirs{
 }
 
 
+form .notes .container textarea{
+  width: 100%;
+  height: 70px;
+  resize: none;
+  outline: none;
+  border: none;
+  padding: 7px 0;
+    font-size: 1.125rem;
+    font-family: 'Josefin Sans', sans-serif;
+    position: relative;
+}
 
+
+
+
+
+form .notes .container textarea::placeholder{
+  color: rgba(0, 0, 0, 0.473);
+  
+  
+  
+}
+
+
+
+
+form .notes .container textarea:focus, form .notes .container textarea:hover{
+  font-weight: bold;
+}
 
 </style>
