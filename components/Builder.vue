@@ -6,7 +6,7 @@
         
 
           <div class="yours">
-            <h2>Your Company :</h2>
+            <h2>Your Company </h2>
             <input type="text" :placeholder="fis.test" v-model="fis.test">
             <input type="text" placeholder="Company’s Adress"> 
             <input type="text" placeholder="City, State Zip"> 
