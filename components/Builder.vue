@@ -55,7 +55,7 @@
         </div>
         <div class="body">
       
-          <div v-for="(item,index) in fis.items" :key="index" class="single" @change="calculate" >
+          <div v-for="(item,index) in fis.items" :key="index" class="single" @input="calculate" >
            
             <div><textarea type="text" placeholder="Enter item name/description" v-model="item.desc" required></textarea></div>
             <div><input type="number"  min="1" placeholder="2" v-model="item.quantity" required></div>
@@ -80,8 +80,8 @@
            </div>
            <div class="total">
               <p ><strong>Total</strong></p>
-              <input type="text" placeholder="Currency">
-              <p>{{fis.calculations.afterTax}}</p>
+              <input type="text" placeholder="Currency" v-model="fis.info.currency">
+              <p>{{fis.calculations.afterTax}}  <span style="text-transform:uppercase;margin-left:5px;">{{fis.info.currency}}</span></p>
            </div>
           </div>
         </div>
@@ -120,7 +120,8 @@ export default {
             tax : 18,
             invoiceNumber : undefined,
             invoiceDate : undefined,
-            dueDate : undefined
+            dueDate : undefined,
+            currency : 'USD'
           },
           calculations : {
             subTotal : 0,
