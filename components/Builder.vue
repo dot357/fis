@@ -1,67 +1,108 @@
 <template>
   <section>
     <form>
+      {{fis.header}}
       <div class="header">
         <div class="left">
-        
-
           <div class="yours">
-            <h2>Your Company </h2>
-            <input type="text" :placeholder="fis.test" v-model="fis.test">
-            <input type="text" placeholder="Company’s Adress"> 
-            <input type="text" placeholder="City, State Zip"> 
-            <input type="text" placeholder="Country"> 
+            <h2>Your Company</h2>
+            <input type="text" placeholder="Company's Name" required v-model="fis.header.yourCompany.cName" />
+            <input type="text" placeholder="Company’s Adress" required v-model="fis.header.yourCompany.cAdress" />
+            <input type="text" placeholder="City, State Zip" required v-model="fis.header.yourCompany.cCity"/>
+            <input type="text" placeholder="Country" required v-model="fis.header.yourCompany.cCountry"/>
           </div>
 
-           <div class="theirs">
-             <h2>Bill to :</h2>
-            <input type="text" placeholder="Your Client’s Company">
-            <input type="text" placeholder="Client’s Adress"> 
-            <input type="text" placeholder="City, State Zip"> 
-            <input type="text" placeholder="Country"> 
+          <div class="theirs">
+            <h2>Bill to :</h2>
+            <input type="text" placeholder="Your Client’s Company" required  v-model="fis.header.yourCompany.tName"/>
+            <input type="text" placeholder="Client’s Adress" required v-model="fis.header.yourCompany.tAdress"/>
+            <input type="text" placeholder="City, State Zip" required v-model="fis.header.yourCompany.tCity" />
+            <input type="text" placeholder="Country" required  v-model="fis.header.yourCompany.tCountry" />
           </div>
         </div>
         <div class="right">
-
-          <input class="getLost" type="file" ref="logo"> <!-- this will be hidden --> 
-          <h1 v-html="fis.test"  @click="$refs.logo.click()">INVOICE</h1>
+          <input class="getLost" type="file" ref="logo" />
+          <!-- this will be hidden -->
+          <h1  @click="$refs.logo.click()">{{fis.header.yourCompany.cName}}</h1>
 
           <div class="info">
-           <div class="container">
-             <p >Invoice# :</p>
-              <input type="text" placeholder="EG : INV-13">
-           </div>
+            <div class="container">
+              <p>Invoice# :</p>
+              <input type="text" placeholder="EG : INV-13" />
+            </div>
 
-           <div class="container">
-             <p>Invoice Date :</p>
-              <input type="date" >
-           </div>
+            <div class="container">
+              <p>Invoice Date :</p>
+              <input type="date" />
+            </div>
 
-           <div class="container">
-             <p>Due Date :</p>
-              <input type="date" >
-           </div>
-            
+            <div class="container">
+              <p>Due Date :</p>
+              <input type="date" />
+            </div>
           </div>
-          
         </div>
       </div>
       <div class="table">
-        <h2>Table</h2>
+        
+        
+  
+        <div class="head">
+          <div>Item Description</div>
+          <div>Quantity</div>
+          <div>Rate</div>
+          <div>Amount</div>
+        </div>
+        <div class="body">
       
-      
+          <div v-for="(item,index) in fis.items" :key="index" class="single" @change="calculate" >
+           
+            <div><textarea type="text" placeholder="Enter item name/description" v-model="item.desc" required></textarea></div>
+            <div><input type="number"  min="1" placeholder="2" v-model="item.quantity" required></div>
+            <div><input type="number"  min="1" placeholder="100" v-model="item.rate" required></div>
+            <div v-if="item.rate && item.quantity">{{item.rate * item.quantity}}</div>
+            <div class="taxRate" ><input type="number" :placeholder="fis.info.tax+'%'" v-model="fis.info.tax" required></div>
+          </div>
+
+          
+          
+        </div>
+
+      <div class="sum">
+        <div class="left"></div>
+        <div class="right">
+          <div>
+            <div>
+              <p><strong>Sub Total</strong> <span>{{fis.calculations.subTotal}}</span></p>
+            </div>
+           <div>
+              <p><strong>Sales Tax ( <span >{{fis.tax}}%</span> )</strong> <span>{{fis.calculations.taxXed}}</span> </p>
+           </div>
+           <div class="total">
+              <p ><strong>Total</strong></p>
+              <input type="text" placeholder="Currency">
+              <p>{{fis.calculations.afterTax}}</p>
+           </div>
+          </div>
+        </div>
+
+      </div>
+        
+
       </div>
       <div class="notes">
         <div class="container">
-        <h2>Notes :</h2>
-        <textarea name="" placeholder="Please add your notes"></textarea>
+          <h2>Notes :</h2>
+          <textarea name="" placeholder="Please add your notes"></textarea>
         </div>
 
         <div class="container">
-        <h2>Terms & Conditions :</h2>
-        <textarea name="" placeholder="Please add your terms and conditions" ></textarea>
+          <h2>Terms & Conditions :</h2>
+          <textarea
+            name=""
+            placeholder="Please add your terms and conditions"
+          ></textarea>
         </div>
-
       </div>
     </form>
   </section>
@@ -73,18 +114,78 @@ export default {
   data() {
     return {
       fis: {
-        test :'F.I.S.'
+          tax : 18,
+          test: 'F.I.S.',
+          info : {
+            tax : 18,
+            invoiceNumber : undefined,
+            invoiceDate : undefined,
+            dueDate : undefined
+          },
+          calculations : {
+            subTotal : 0,
+            afterTax : 0,
+            taxXed : 0
+          },
+          header : {
+             yourCompany : {
+                cName : undefined,
+                cAdress : undefined,
+                cCity : undefined,
+                cCountry : undefined,
+                cLogo : undefined
+              },
+              theirCompany : {
+                tName : undefined,
+                tAdress : undefined,
+                tCity : undefined,
+                tCountry : undefined
+              }
+          },
+        items : [
+          {
+          id: 1,
+          desc : undefined,
+          quantity : undefined,
+          rate : undefined,
+          amount : undefined
+        },
+        {
+          id: 2,
+          desc : undefined,
+          quantity : 1,
+          rate : 1,
+          amount : 100
+        }
+        ]
       },
     }
   },
-  methods: {},
+  methods: {
+    calculate(){
+      this.fis.calculations.subTotal = 0
+      this.fis.calculations.taxXed = 0
+      this.fis.calculations.afterTax = 0
+      this.fis.items.forEach((element) => {
+        
+        if(element.rate && element.quantity){
+          //validation logic will be presented here.
+          // values are added now calculate the total price
+          const taxValue = this.fis.info.tax / 100
+          this.fis.calculations.subTotal += element.rate * element.quantity
+          this.fis.calculations.taxXed += (element.rate * element.quantity) * taxValue
+          this.fis.calculations.afterTax += (element.rate * element.quantity) + ((element.rate * element.quantity) * taxValue )
+
+        }
+        else console.log("Please enter all required fields")
+      })
+    }
+  },
 }
 </script>
 
 <style>
-
-
-.getLost{
+.getLost {
   position: absolute;
   z-index: -999;
   opacity: 0;
@@ -104,12 +205,12 @@ form {
   align-items: flex-start;
 }
 
-form > div{
+form > div {
   margin: 25px 0;
-  border: 1px solid rgba(0, 0, 0, 0.178);
+  /*border: 1px solid rgba(0, 0, 0, 0.178); */
 }
 
-form  input{
+form input {
   font-family: 'Josefin Sans', sans-serif;
   color: black;
   border: none;
@@ -119,48 +220,39 @@ form  input{
   position: relative;
 }
 
-form  input::placeholder{
+form input::placeholder {
   color: black;
-  
-  
-  
 }
 
-
-
-
-form  input:focus, form  input:hover{
+form input:focus,
+form input:hover {
   font-weight: bold;
 }
 
 form div {
   width: 100%;
- 
+
   height: auto;
 }
 
-form > .header{
+form > .header {
   display: flex;
   flex-direction: row;
   gap: 25px;
-  
+
   align-items: flex-start;
- 
 }
 
-form > .header > .right{
-  width:100%;
- 
+form > .header > .right {
+  width: 100%;
+
   min-height: 480px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  
 }
 
-
-
-form > .header > .right > h1{
+form > .header > .right > h1 {
   font-size: 3rem;
   text-align: right;
   cursor: pointer;
@@ -168,70 +260,171 @@ form > .header > .right > h1{
   margin: 0;
 }
 
-
-form > .header > .right .info .container{
+form > .header > .right .info .container {
   display: flex;
   flex-direction: row;
   width: 100%;
- 
+
   justify-content: space-between;
 }
 
-form > .header > .right .info .container{
+form > .header > .right .info .container {
   border-bottom: 1px solid black;
 }
 
-form > .header > .right .info .container p{
+form > .header > .right .info .container p {
   font-weight: bold;
 }
 
-form > .header > .right .info .container input{
-  
+form > .header > .right .info .container input {
   min-width: 250px;
 }
 
-
-form > .header > .left > div{
+form > .header > .left > div {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  
-  
 }
 
-form > .header .left > .theirs{
+form > .header .left > .theirs {
   margin-top: 55px;
 }
 
-
-form .notes .container textarea{
+form  textarea {
   width: 100%;
   height: 70px;
   resize: none;
   outline: none;
   border: none;
   padding: 7px 0;
-    font-size: 1.125rem;
-    font-family: 'Josefin Sans', sans-serif;
-    position: relative;
+  font-size: 1.125rem;
+  font-family: 'Josefin Sans', sans-serif;
+  position: relative;
 }
 
-
-
-
-
-form .notes .container textarea::placeholder{
+form .notes .container textarea::placeholder {
   color: rgba(0, 0, 0, 0.473);
-  
-  
-  
 }
 
-
-
-
-form .notes .container textarea:focus, form .notes .container textarea:hover{
+form .notes .container textarea:focus,
+form .notes .container textarea:hover {
   font-weight: bold;
 }
+
+.table .head{
+  background: var(--base-color);
+  color: white;
+  padding: 20px 0px;
+
+  
+}
+
+.table .head {
+  border-radius: 4px;
+
+}
+
+.table .head  div:first-child{
+
+  padding-left: 30px;
+
+}
+.body .single{
+  padding: 20px 0px;
+}
+
+.body .single div:first-child{
+   padding-left: 30px;
+   width: 100%;
+  
+}
+.table .body .single{
+  position: relative;
+}
+.table .body .single .taxRate{
+  position: absolute;
+  left: 93.5%;
+  top: 10px;
+  background: var(--base-color);
+  width: 50px;
+  padding: 5px;
+  border-radius: 4px;
+  
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+
+}
+
+.table .body .single:hover .taxRate{
+  transition: all 0.15s ease;
+  z-index: initial;
+  
+  
+   pointer-events: all;
+  opacity: 1;
+}
+
+.body .single div input{
+  width: 50px;
+}
+
+.table .head, .table .body .single{
+  display: grid;
+grid-template-columns: 4fr repeat(3, 1fr);
+}
+
+.table .body .single > div {
+
+  align-items: center;
+}
+
+.table .body .single > div > textarea{
+  
+  width: 90%;
+  height: 20px;
+}
+
+
+.table .sum{
+  display: flex;
+  flex-direction: row;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.table .sum .right p{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+ .table .sum .right .total{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--base-color);
+  color: white;
+  border-radius: 4px;
+
+}
+
+.table .sum .right .total > *:not(select){
+  padding: 8px 20px;
+}
+
+.table .sum .right .total input{
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  padding: 6px 20px;
+  width: 75px;
+  text-align: center;
+  
+}
+
+
+
 
 </style>
