@@ -2,8 +2,14 @@
 
 :root{
     --base-color : #08003A;
+    --accent-color : #7b004f;
+    --danger-color : #d3172c;
 }
 
 html,body{
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+input,textarea,select,option,button{
     font-family: 'Josefin Sans', sans-serif;
 }

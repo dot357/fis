@@ -1,5 +1,8 @@
 <template>
   <section>
+    <pre>
+      {{fis}}
+    </pre>
     <form>
       {{fis.header}}
       <div class="header">
@@ -56,27 +59,31 @@
         <div class="body">
       
           <div v-for="(item,index) in fis.items" :key="index" class="single" @input="calculate" >
-           
+            <div class="removeItem"> <button @click.prevent="removeItem(item.id)">X</button></div>
             <div><textarea type="text" placeholder="Enter item name/description" v-model="item.desc" required></textarea></div>
             <div><input type="number"  min="1" placeholder="2" v-model="item.quantity" required></div>
             <div><input type="number"  min="1" placeholder="100" v-model="item.rate" required></div>
             <div v-if="item.rate && item.quantity">{{item.rate * item.quantity}}</div>
             <div class="taxRate" ><input type="number" :placeholder="fis.info.tax+'%'" v-model="fis.info.tax" required></div>
+           
           </div>
+          
 
           
           
         </div>
 
       <div class="sum">
-        <div class="left"></div>
+        <div class="left">
+          <button @click.prevent="addItem"> Add Item</button>
+        </div>
         <div class="right">
           <div>
             <div>
               <p><strong>Sub Total</strong> <span>{{fis.calculations.subTotal}}</span></p>
             </div>
            <div>
-              <p><strong>Sales Tax ( <span >{{fis.tax}}%</span> )</strong> <span>{{fis.calculations.taxXed}}</span> </p>
+              <p><strong>Sales Tax ( <span >{{fis.info.tax}}%</span> )</strong> <span>{{fis.calculations.taxXed}}</span> </p>
            </div>
            <div class="total">
               <p ><strong>Total</strong></p>
@@ -180,6 +187,18 @@ export default {
         }
         else console.log("Please enter all required fields")
       })
+    },
+    addItem(){
+      this.fis.items.push({
+          id: this.fis.items.length+1,
+          desc : undefined,
+          quantity : undefined,
+          rate : undefined,
+          amount : undefined
+      })
+    },
+    removeItem(id){
+      this.fis.items = this.fis.items.filter(e => e.id !== id)
     }
   },
 }
@@ -341,6 +360,7 @@ form .notes .container textarea:hover {
 }
 .table .body .single{
   position: relative;
+
 }
 .table .body .single .taxRate{
   position: absolute;
@@ -366,8 +386,43 @@ form .notes .container textarea:hover {
   opacity: 1;
 }
 
+.table .body .single .removeItem{
+  position: absolute;
+  left:0;
+  top: -10px;
+  background: var(--danger-color);
+  width: auto;
+  padding: 5px;
+  border-radius: 4px;
+
+   opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+
+}
+
+.table .body .single .removeItem button{
+  background: white;
+  outline: none;
+  border: none;
+}
+
+.table .body .single:hover .removeItem{
+  transition: all 0.15s ease;
+  z-index: initial;
+  transition-delay: 0.3s;
+  
+  
+   pointer-events: all;
+  opacity: 1;
+}
+
 .body .single div input{
   width: 50px;
+}
+
+.body .single div input::placeholder{
+  color: rgba(0, 0, 0, 0.548);
 }
 
 .table .head, .table .body .single{
@@ -391,7 +446,8 @@ grid-template-columns: 4fr repeat(3, 1fr);
   display: flex;
   flex-direction: row;
    justify-content: space-between;
-   align-items: center;
+   align-items: flex-end;
+   gap: 25px;
 }
 
 .table .sum .right p{
@@ -425,6 +481,27 @@ grid-template-columns: 4fr repeat(3, 1fr);
   
 }
 
+
+
+
+.table .sum .left button{
+  width: 125px;
+  margin: 0 auto;
+  border: none;
+  outline: none;
+  padding: 12px 12px;
+  font-weight: bold;
+  background: var(--base-color);
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+
+}
+
+.table .sum .left button:hover{
+  transition: all 0.15s ease;
+  transform: scale(0.95);
+}
 
 
 
