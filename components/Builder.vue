@@ -1,10 +1,15 @@
 <template>
   <section>
-    <pre>
+   <details>
+     <summary>F.I.S.</summary>
+     <div>
+        <pre>
       {{fis}}
     </pre>
+     </div>
+   </details>
     <form>
-      {{fis.header}}
+   
       <div class="header">
         <div class="left">
           <div class="yours">
@@ -59,12 +64,13 @@
         <div class="body">
       
           <div v-for="(item,index) in fis.items" :key="index" class="single" @input="calculate" >
-            <div class="removeItem"> <button @click.prevent="removeItem(item.id)">X</button></div>
+            <div class="removeItem" @click.prevent="removeItem(item.id)">X</div>
             <div><textarea type="text" placeholder="Enter item name/description" v-model="item.desc" required></textarea></div>
             <div><input type="number"  min="1" placeholder="2" v-model="item.quantity" required></div>
             <div><input type="number"  min="1" placeholder="100" v-model="item.rate" required></div>
             <div v-if="item.rate && item.quantity">{{item.rate * item.quantity}}</div>
-            <div class="taxRate" ><input type="number" :placeholder="fis.info.tax+'%'" v-model="fis.info.tax" required></div>
+         
+            <div class="taxRate" v-show="!fis.info.universalTax"><input type="number" :placeholder="item.tax+'%'" v-model="item.tax" ></div>
            
           </div>
           
@@ -83,21 +89,34 @@
               <p><strong>Sub Total</strong> <span>{{fis.calculations.subTotal}}</span></p>
             </div>
            <div>
-              <p><strong>Sales Tax ( <span >{{fis.info.tax}}%</span> )</strong> <span>{{fis.calculations.taxXed}}</span> </p>
+              <p v-if="!fis.info.universalTax"><strong>All Tax Applied </strong>  <span>{{fis.calculations.taxXed}}</span> </p>
+              <p v-if="fis.info.universalTax"><strong>Sales Tax ( <span >{{fis.info.tax}}%</span> )</strong>  <span>{{fis.calculations.taxXed}}</span> </p>
+              <p @input="calculate"><strong>Equal tax:</strong> <input type="number" min="0" v-model="fis.info.tax"> <input type="checkbox"  name="universalTax" v-model="fis.info.universalTax" @change="calculate"></p>
            </div>
            <div class="total">
               <p ><strong>Total</strong></p>
-              <input type="text" placeholder="Currency" v-model="fis.info.currency">
+              <input type="text" placeholder="Currency" v-model="fis.info.currency" >
               <p>{{fis.calculations.afterTax}}  <span style="text-transform:uppercase;margin-left:5px;">{{fis.info.currency}}</span></p>
            </div>
+           
           </div>
+         
         </div>
 
+        
+
       </div>
+        
         
 
       </div>
       <div class="notes">
+       
+        <p v-if="fis.info.sumAsText && asText" class="asText">
+          <strong>Approximately : </strong> <span>   {{fis.info.sumAsText}} {{fis.info.currency}}</span>
+        </p>
+        
+     
         <div class="container">
           <h2>Notes :</h2>
           <textarea name="" placeholder="Please add your notes"></textarea>
@@ -116,24 +135,35 @@
 </template>
 
 <script>
+import writtenNumber from '../node_modules/written-number'
+
 export default {
   name: 'Builder',
+  props : {
+     asText : {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       fis: {
-          tax : 18,
+          
           test: 'F.I.S.',
           info : {
             tax : 18,
             invoiceNumber : undefined,
             invoiceDate : undefined,
             dueDate : undefined,
-            currency : 'USD'
+            currency : 'USD',
+            universalTax : true
+           
           },
           calculations : {
             subTotal : 0,
             afterTax : 0,
-            taxXed : 0
+            taxXed : 0,
+            sumAsText : undefined
           },
           header : {
              yourCompany : {
@@ -156,14 +186,8 @@ export default {
           desc : undefined,
           quantity : undefined,
           rate : undefined,
-          amount : undefined
-        },
-        {
-          id: 2,
-          desc : undefined,
-          quantity : 1,
-          rate : 1,
-          amount : 100
+          amount : undefined,
+          tax : 10
         }
         ]
       },
@@ -171,22 +195,43 @@ export default {
   },
   methods: {
     calculate(){
+     
       this.fis.calculations.subTotal = 0
       this.fis.calculations.taxXed = 0
       this.fis.calculations.afterTax = 0
+      this.fis.info.sumAsText = undefined
       this.fis.items.forEach((element) => {
         
-        if(element.rate && element.quantity){
+        if(this.fis.info.universalTax) {
+          
+          element.tax = this.fis.info.tax
+
+          if(element.rate && element.quantity){
           //validation logic will be presented here.
           // values are added now calculate the total price
           const taxValue = this.fis.info.tax / 100
-          this.fis.calculations.subTotal += element.rate * element.quantity
-          this.fis.calculations.taxXed += (element.rate * element.quantity) * taxValue
-          this.fis.calculations.afterTax += (element.rate * element.quantity) + ((element.rate * element.quantity) * taxValue )
-
+          this.fis.calculations.subTotal += this.rounder(element.rate * element.quantity)
+          this.fis.calculations.taxXed += this.rounder((element.rate * element.quantity) * taxValue)
+          this.fis.calculations.afterTax += this.rounder((element.rate * element.quantity) + ((element.rate * element.quantity) * taxValue ))
+          this.fis.info.sumAsText = writtenNumber(this.fis.calculations.afterTax , {lang: document.querySelector("html").lang})
         }
         else console.log("Please enter all required fields")
+
+        }else{
+          //calc differently
+          
+          const individualTaxValue = element.tax / 100
+          this.fis.calculations.subTotal += this.rounder(element.rate * element.quantity)
+          this.fis.calculations.taxXed += this.rounder((element.rate * element.quantity) * individualTaxValue)
+          this.fis.calculations.afterTax += this.rounder((element.rate * element.quantity) + ((element.rate * element.quantity) * individualTaxValue ))
+          this.fis.info.sumAsText = writtenNumber(this.fis.calculations.afterTax , {lang: document.querySelector("html").lang})
+        }
+        
+        
       })
+    },
+    rounder(number){
+      return Math.round(number * 100) / 100
     },
     addItem(){
       this.fis.items.push({
@@ -194,11 +239,13 @@ export default {
           desc : undefined,
           quantity : undefined,
           rate : undefined,
-          amount : undefined
+          amount : undefined,
+          tax : undefined
       })
     },
     removeItem(id){
       this.fis.items = this.fis.items.filter(e => e.id !== id)
+      this.calculate()
     }
   },
 }
@@ -240,14 +287,11 @@ form input {
   position: relative;
 }
 
-form input::placeholder {
-  color: black;
+form  input::placeholder {
+  color: rgba(0, 0, 0, 0.473);
 }
 
-form input:focus,
-form input:hover {
-  font-weight: bold;
-}
+
 
 form div {
   width: 100%;
@@ -322,6 +366,7 @@ form  textarea {
   position: relative;
 }
 
+
 form .notes .container textarea::placeholder {
   color: rgba(0, 0, 0, 0.473);
 }
@@ -388,24 +433,29 @@ form .notes .container textarea:hover {
 
 .table .body .single .removeItem{
   position: absolute;
-  left:0;
-  top: -10px;
+  right:0;
+  top: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  height: 30px;
+  width: 25px;
+ 
   background: var(--danger-color);
   width: auto;
   padding: 5px;
   border-radius: 4px;
 
    opacity: 0;
-  z-index: -1;
+ 
   pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 
 }
 
-.table .body .single .removeItem button{
-  background: white;
-  outline: none;
-  border: none;
-}
+
 
 .table .body .single:hover .removeItem{
   transition: all 0.15s ease;
@@ -417,12 +467,23 @@ form .notes .container textarea:hover {
   opacity: 1;
 }
 
+.removeItem:hover{
+  transform: scale(0.95);
+  transition-delay: 0;
+}
+
 .body .single div input{
   width: 50px;
 }
 
 .body .single div input::placeholder{
+  
   color: rgba(0, 0, 0, 0.548);
+}
+
+.body .single div textarea{
+  padding: 0 2.6rem;
+
 }
 
 .table .head, .table .body .single{
@@ -437,8 +498,9 @@ grid-template-columns: 4fr repeat(3, 1fr);
 
 .table .body .single > div > textarea{
   
-  width: 90%;
+  max-width: 90%;
   height: 20px;
+  
 }
 
 
@@ -482,6 +544,16 @@ grid-template-columns: 4fr repeat(3, 1fr);
 }
 
 
+.asText{
+  margin-top: 25px;
+  text-transform: capitalize;
+  font-weight: 400;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+
+
 
 
 .table .sum .left button{
@@ -503,6 +575,16 @@ grid-template-columns: 4fr repeat(3, 1fr);
   transform: scale(0.95);
 }
 
+
+
+/* media queries */
+
+@media screen and (max-width: 1200px) {
+section .content{
+  flex-wrap: wrap;
+ 
+}
+}
 
 
 </style>
