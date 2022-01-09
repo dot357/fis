@@ -1,13 +1,6 @@
 <template>
   <section>
-   <details>
-     <summary>F.I.S.</summary>
-     <div>
-        <pre>
-      {{fis}}
-    </pre>
-     </div>
-   </details>
+  
     <form>
    
       <div class="header">
@@ -96,7 +89,7 @@
            <div class="total">
               <p ><strong>Total</strong></p>
               <input type="text" placeholder="Currency" v-model="fis.info.currency" >
-              <p>{{fis.calculations.afterTax}}  <span style="text-transform:uppercase;margin-left:5px;">{{fis.info.currency}}</span></p>
+              <p>{{fis.calculations.afterTax}}  <span style="text-transform:uppercase;margin-left:5px;font-weight:bold;">{{fis.info.currency}}</span></p>
            </div>
            
           </div>
@@ -113,7 +106,7 @@
       <div class="notes">
        
         <p v-if="fis.info.sumAsText && asText" class="asText">
-          <strong>Approximately : </strong> <span>   {{fis.info.sumAsText}} {{fis.info.currency}}</span>
+          <strong>Approximately : </strong> <span>   {{fis.info.sumAsText}} <span style="text-transform:uppercase;margin-left:5px;font-weight:bold;">{{fis.info.currency}}</span></span>
         </p>
         
      
