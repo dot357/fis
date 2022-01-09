@@ -50,6 +50,28 @@ nav ul{
     list-style: none;
 }
 
+nav ul li{
+    position: relative;
+    cursor: pointer;
+}
+
+nav ul li:not(.buyMe)::before{
+    content: '';
+    display: block;
+    width: 0%;
+    height: 1px;
+   background: #FFDD00;
+   border-radius: 999px;
+    position: absolute;
+    top: 99%;
+}
+
+nav ul li:hover:not(.buyMe)::before{
+    transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+    width: 100%;
+    
+}
+
 nav .buyMe{
     background: #FFDD00;
     color: black;

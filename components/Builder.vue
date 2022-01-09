@@ -2,7 +2,7 @@
   <section>
   
     <form>
-   
+      
       <div class="header">
         <div class="left">
           <div class="yours">
@@ -22,9 +22,10 @@
           </div>
         </div>
         <div class="right">
-          <input class="getLost" type="file" ref="logo" />
+          <input class="getLost" type="file" ref="logo" @change="getFile" />
           <!-- this will be hidden -->
           <h1  @click="$refs.logo.click()">{{fis.header.yourCompany.cName}}</h1>
+         
 
           <div class="info">
             <div class="container">
@@ -142,7 +143,7 @@ export default {
     return {
       fis: {
           
-          test: 'F.I.S.',
+          logo: undefined,
           info : {
             tax : 18,
             invoiceNumber : undefined,
@@ -239,6 +240,16 @@ export default {
     removeItem(id){
       this.fis.items = this.fis.items.filter(e => e.id !== id)
       this.calculate()
+    },
+    getFile(e){
+      console.log(e.target.files[0])
+      this.fis.logo = e.target.files[0]
+      var reader = new FileReader();
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onload = function () {
+        console.log(reader.result);
+	      this.fis.logo = reader.result
+      };
     }
   },
 }

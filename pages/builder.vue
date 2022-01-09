@@ -24,6 +24,7 @@
              <summary>⚙️ Settings</summary>
              <div class="container">
                <p>🧮 Show aproximated sum <input type="checkbox" name="" id="" v-model="builderSettings.showAsText"></p>
+               <p class="darkMode">🌑 Dark mode <input type="checkbox" name="" id="" v-model="builderSettings.darkMode" @change="darkMode"></p>
                
              </div>
            </details>
@@ -41,8 +42,25 @@ export default {
   data(){
     return{
       builderSettings : {
-        showAsText : true
+        showAsText : true,
+        darkMode : false
       }
+    }
+  },
+  methods : {
+    darkMode(){
+      
+      if(this.builderSettings.darkMode){
+         document.querySelector('body').style.filter ="invert(1)"
+         !this.builderSettings.darkMode
+      }
+      else {
+        document.querySelector('body').style.filter ="invert(0)"
+        !this.builderSettings.darkMode
+      }
+
+
+      
     }
   }
 }
@@ -142,6 +160,14 @@ section .content .right .settings .container p{
   align-items: center;
   width: 100%;
   
+}
+
+.darkMode{
+  background: white;
+  padding: 0.3rem 0;
+  filter: invert(1);
+  border-radius: 4px;
+
 }
 </style>
 
