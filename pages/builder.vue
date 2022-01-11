@@ -1,6 +1,6 @@
 <template>
  <section>
-  
+ 
    <div class="content">
        <div class="left"> <Builder @get-info="getInfo" :asText="builderSettings.showAsText" :equalTax="builderSettings.equalTax" :darkMode="builderSettings.darkMode" /></div>
        <div class="right">
@@ -36,8 +36,8 @@
 
 <script>
 import Builder from '../components/Builder.vue'
-// documentation for jsPDF https://github.com/parallax/jsPDF http://raw.githack.com/MrRio/jsPDF/master/docs/
-import { jsPDF } from "jspdf";
+
+import pdfMake from '../node_modules/pdfmake'
 export default {
   components: { Builder },
   name: 'BuilderPage',
@@ -70,40 +70,31 @@ export default {
       
     },
     generatePDF(item){
-      /* 
-      text splitting : http://raw.githack.com/MrRio/jsPDF/master/
-
-      */
-      // Default export is a4 paper, portrait, using millimeters for units
-      const doc = new jsPDF();
-
-      //you have to do some templating with the pdf to get the result you want.
-      //need text splitting will be worked on it
-
-      //Your company
-      doc.setFont("helvetica", "bold");  //fonts can be dynamic and users can pick it up later on.
-      doc.setFontSize(14);
-      doc.text(item.header.yourCompany.cName, 10, 25);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(12);
-      doc.text(item.header.yourCompany.cAdress, 10, 32);  
-      doc.text(item.header.yourCompany.cCity, 10, 39);    
-      doc.text(item.header.yourCompany.cCountry, 10, 46); 
-      //their company
-
-      doc.setFont("helvetica", "bold");  //fonts can be dynamic and users can pick it up later on.
-      doc.setFontSize(14);
-      doc.text(item.header.theirCompany.tName, 10, 60);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(12);
-      doc.text(item.header.theirCompany.tAdress, 10, 67);  
-      doc.text(item.header.theirCompany.tCity, 10, 74);    
-      doc.text(item.header.theirCompany.tCountry, 10, 81); 
-
-
-   
-
-      doc.save("a4.pdf");
+      const toBePrinted = {
+        content : [
+          
+          {
+            alignment : 'left',
+            columns : [
+              {
+                text : `${item.header.yourCompany.cName} \n ${item.header.yourCompany.cAdress} \n ${item.header.yourCompany.cCity} \n ${item.header.yourCompany.cCountry}`
+              },
+              {
+                text : `${item.header.yourCompany.cName} \n ${item.header.yourCompany.cAdress} \n ${item.header.yourCompany.cCity} \n ${item.header.yourCompany.cCountry}`
+              }
+            ]
+          }
+        ]
+      }
+      pdfMake.fonts = {
+        Roboto: {
+          normal: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf',
+          bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf',
+          italics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf',
+          bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf'
+        }
+      }
+     pdfMake.createPdf(toBePrinted).download();
     }
   }
 }

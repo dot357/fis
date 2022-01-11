@@ -33,17 +33,17 @@
           <div class="info">
             <div class="container">
               <p>Invoice# :</p>
-              <input type="text" placeholder="EG : INV-13" />
+              <input type="text" placeholder="EG : INV-13" v-model="fis.info.invoiceNumber" />
             </div>
 
             <div class="container">
               <p>Invoice Date :</p>
-              <input type="date" />
+              <input type="date" v-model="fis.info.invoiceDate" />
             </div>
 
             <div class="container">
               <p>Due Date :</p>
-              <input type="date" />
+              <input type="date" v-model="fis.info.dueDate"/>
             </div>
           </div>
         </div>
