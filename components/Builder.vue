@@ -1,7 +1,10 @@
 <template>
-  <section>
-  
-    <form>
+
+  <section >
+
+
+
+    <form @change="emitToTopLevel">
       
       <div class="header">
         <div class="left">
@@ -15,10 +18,10 @@
 
           <div class="theirs">
             <h2>Bill to :</h2>
-            <input type="text" placeholder="Your Client’s Company" required  v-model="fis.header.yourCompany.tName"/>
-            <input type="text" placeholder="Client’s Adress" required v-model="fis.header.yourCompany.tAdress"/>
-            <input type="text" placeholder="City, State Zip" required v-model="fis.header.yourCompany.tCity" />
-            <input type="text" placeholder="Country" required  v-model="fis.header.yourCompany.tCountry" />
+            <input type="text" placeholder="Your Client’s Company" required  v-model="fis.header.theirCompany.tName"/>
+            <input type="text" placeholder="Client’s Adress" required v-model="fis.header.theirCompany.tAdress"/>
+            <input type="text" placeholder="City, State Zip" required v-model="fis.header.theirCompany.tCity" />
+            <input type="text" placeholder="Country" required  v-model="fis.header.theirCompany.tCountry" />
           </div>
         </div>
         <div class="right">
@@ -137,6 +140,10 @@ export default {
      asText : {
       type: Boolean,
       default: false
+    },
+    darkMode : {
+      type : Boolean,
+      default : false
     }
   },
   data() {
@@ -188,6 +195,9 @@ export default {
     }
   },
   methods: {
+    emitToTopLevel(){
+      this.$emit('get-info', this.fis)
+    },
     calculate(){
      
       this.fis.calculations.subTotal = 0

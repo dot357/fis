@@ -3,6 +3,7 @@
         <nuxt-link to="/"><div class="logo">freeinvoice.software</div></nuxt-link>
         <ul>
             <li>About</li>
+            <li>Road Map</li>
             <li>Blog</li>
             <nuxt-link to="/builder"><li>Invoicer</li></nuxt-link>
             <a href="https://www.buymeacoffee.com/dot357" target="_blank"><li class="buyMe">Buy me a coffee</li></a>

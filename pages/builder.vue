@@ -2,7 +2,7 @@
  <section>
   
    <div class="content">
-       <div class="left"> <Builder :asText="builderSettings.showAsText" :equalTax="builderSettings.equalTax" /></div>
+       <div class="left"> <Builder @get-info="getInfo" :asText="builderSettings.showAsText" :equalTax="builderSettings.equalTax" :darkMode="builderSettings.darkMode" /></div>
        <div class="right">
           <div class="logInBox">
              <h2>Create an account</h2>
@@ -10,8 +10,8 @@
              <ul>
                <li> <span>🍕</span> Ad Free</li>
                <li> <span>✨</span> Dashboard</li>
-               <li>Invoive template</li>
-               <li>Remove branding</li>
+               <li><span>🤟🏻</span>Remove branding</li>
+               <li><span>📱</span>Mobile app</li>
              </ul>
              <div class="buttons">
                <button>Sign Up</button>
@@ -25,7 +25,7 @@
              <div class="container">
                <p>🧮 Show aproximated sum <input type="checkbox" name="" id="" v-model="builderSettings.showAsText"></p>
                <p class="darkMode">🌑 Dark mode <input type="checkbox" name="" id="" v-model="builderSettings.darkMode" @change="darkMode"></p>
-               
+               <p><button @click="generatePDF(builder)">Generate PDF</button></p>
              </div>
            </details>
          </div>
@@ -36,6 +36,8 @@
 
 <script>
 import Builder from '../components/Builder.vue'
+// documentation for jsPDF https://github.com/parallax/jsPDF http://raw.githack.com/MrRio/jsPDF/master/docs/
+import { jsPDF } from "jspdf";
 export default {
   components: { Builder },
   name: 'BuilderPage',
@@ -44,10 +46,15 @@ export default {
       builderSettings : {
         showAsText : true,
         darkMode : false
-      }
+      },
+      builder : {}
     }
   },
   methods : {
+    getInfo($e){
+      this.builder = $e
+      console.log($e)
+    },
     darkMode(){
       
       if(this.builderSettings.darkMode){
@@ -61,6 +68,42 @@ export default {
 
 
       
+    },
+    generatePDF(item){
+      /* 
+      text splitting : http://raw.githack.com/MrRio/jsPDF/master/
+
+      */
+      // Default export is a4 paper, portrait, using millimeters for units
+      const doc = new jsPDF();
+
+      //you have to do some templating with the pdf to get the result you want.
+      //need text splitting will be worked on it
+
+      //Your company
+      doc.setFont("helvetica", "bold");  //fonts can be dynamic and users can pick it up later on.
+      doc.setFontSize(14);
+      doc.text(item.header.yourCompany.cName, 10, 25);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      doc.text(item.header.yourCompany.cAdress, 10, 32);  
+      doc.text(item.header.yourCompany.cCity, 10, 39);    
+      doc.text(item.header.yourCompany.cCountry, 10, 46); 
+      //their company
+
+      doc.setFont("helvetica", "bold");  //fonts can be dynamic and users can pick it up later on.
+      doc.setFontSize(14);
+      doc.text(item.header.theirCompany.tName, 10, 60);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      doc.text(item.header.theirCompany.tAdress, 10, 67);  
+      doc.text(item.header.theirCompany.tCity, 10, 74);    
+      doc.text(item.header.theirCompany.tCountry, 10, 81); 
+
+
+   
+
+      doc.save("a4.pdf");
     }
   }
 }
