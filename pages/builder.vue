@@ -70,19 +70,63 @@ export default {
       
     },
     generatePDF(item){
-      const toBePrinted = {
+      /* 
+      TODO : Add tax rate if universal tax is not selected and display tax rates in the table individually
+      */
+     let itemTable = [ 
+                [ 'Item Description', 'Quantity', 'Rate', 'Amount' ],
+                ]
+     console.log(itemTable)
+
+     item.items.forEach(e => {
+       itemTable.push([{ text: e.desc, bold: true }, e.quantity, e.rate, e.quantity * e.rate])
+     })
+
+      console.log(itemTable)
+
+      let toBePrinted = {
+     
         content : [
           
           {
             alignment : 'left',
             columns : [
               {
-                text : `${item.header.yourCompany.cName} \n ${item.header.yourCompany.cAdress} \n ${item.header.yourCompany.cCity} \n ${item.header.yourCompany.cCountry}`
+                width: 160,
+                text : [
+                  {text : `${item.header.yourCompany.cName} \n `, fontSize:14, bold:true, lineHeight: 1.25},
+                  {text : `${item.header.yourCompany.cAdress} \n ${item.header.yourCompany.cCity} \n ${item.header.yourCompany.cCountry } \n\n\n`, fontSize:9.5, bold:false, lineHeight: 1.35},
+                  {text : `${item.header.theirCompany.tName} \n `, fontSize:14, bold:true, lineHeight: 1.25},
+                  {text : `${item.header.theirCompany.tAdress} \n ${item.header.theirCompany.tCity} \n ${item.header.theirCompany.tCountry}`, fontSize:9.5, bold:false, lineHeight: 1.35}
+                ]
+               
               },
               {
-                text : `${item.header.yourCompany.cName} \n ${item.header.yourCompany.cAdress} \n ${item.header.yourCompany.cCity} \n ${item.header.yourCompany.cCountry}`
+                width: '*',
+               text :[
+                 { text : `${item.header.yourCompany.cName} \n\n\n\n\n\n`, alignment : 'right',fontSize:18, bold: true},
+                 { text : `Invoice# : ${item.info.invoiceNumber} \n Invoice Date : ${item.info.invoiceDate} \n Due Date : ${item.info.dueDate} \n  `, alignment : 'right',fontSize:9.5, bold:false, lineHeight: 1.35}
+               ]
               }
-            ]
+            ],
+              columnGap: 25,
+              margin : [0,0,0,50],
+            
+          },
+          {
+            layout: 'lightHorizontalLines', // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 1,
+              widths: [ '*', 'auto', 100, '*' ],
+          
+              body: [
+                [ 'First', 'Second', 'Third', 'The last one' ],
+                [ 'Value 1', 'Value 2', 'Value 3', 'Value 4' ],
+                [ { text: 'Bold value', bold: true }, 'Val 2', 'Val 3', 'Val 4' ]
+              ]
+            }
           }
         ]
       }
@@ -94,6 +138,8 @@ export default {
           bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf'
         }
       }
+      toBePrinted.content[1].table.body = itemTable
+      
      pdfMake.createPdf(toBePrinted).download();
     }
   }
