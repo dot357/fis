@@ -79,7 +79,8 @@ export default {
      console.log(itemTable)
 
      item.items.forEach(e => {
-       itemTable.push([{ text: e.desc, bold: true }, e.quantity, e.rate, e.quantity * e.rate])
+       if(item.info.universalTax) itemTable.push([{ text: e.desc, bold: true }, e.quantity, e.rate, e.quantity * e.rate])
+       else itemTable.push([{ text: e.desc, bold: true }, e.quantity, e.rate, `${e.quantity * e.rate} ( ${e.tax}%)`])
      })
 
       console.log(itemTable)
