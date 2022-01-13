@@ -116,7 +116,7 @@
      
         <div class="container">
           <h2>Notes :</h2>
-          <textarea name="" placeholder="Please add your notes"></textarea>
+          <textarea name="" placeholder="Please add your notes" v-model="fis.footer.notes"></textarea>
         </div>
 
         <div class="container">
@@ -124,7 +124,7 @@
           <textarea
             name=""
             placeholder="Please add your terms and conditions"
-          ></textarea>
+          v-model="fis.footer.terms"></textarea>
         </div>
       </div>
     </form>
@@ -159,6 +159,10 @@ export default {
             currency : 'USD',
             universalTax : true
            
+          },
+          footer: {
+            notes: null,
+            terms : null
           },
           calculations : {
             subTotal : 0,
