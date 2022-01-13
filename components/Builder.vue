@@ -38,12 +38,12 @@
 
             <div class="container">
               <p>Invoice Date :</p>
-              <input type="date" v-model="fis.info.invoiceDate" />
+              <input type="date" v-model="fis.info.invoiceDate" @change="fis.info.dueDate = null" />
             </div>
 
             <div class="container">
               <p>Due Date :</p>
-              <input type="date" v-model="fis.info.dueDate"/>
+              <input type="date" v-model="fis.info.dueDate" :min="fis.info.invoiceDate"/>
             </div>
           </div>
         </div>
@@ -150,12 +150,12 @@ export default {
     return {
       fis: {
           
-          logo: undefined,
+          logo: null,
           info : {
             tax : 18,
-            invoiceNumber : undefined,
-            invoiceDate : undefined,
-            dueDate : undefined,
+            invoiceNumber : null,
+            invoiceDate : null,
+            dueDate : null,
             currency : 'USD',
             universalTax : true
            
@@ -168,30 +168,30 @@ export default {
             subTotal : 0,
             afterTax : 0,
             taxXed : 0,
-            sumAsText : undefined
+            sumAsText : null
           },
           header : {
              yourCompany : {
-                cName : undefined,
-                cAdress : undefined,
-                cCity : undefined,
-                cCountry : undefined,
-                cLogo : undefined
+                cName : null,
+                cAdress : null,
+                cCity : null,
+                cCountry : null,
+                cLogo : null
               },
               theirCompany : {
-                tName : undefined,
-                tAdress : undefined,
-                tCity : undefined,
-                tCountry : undefined
+                tName : null,
+                tAdress : null,
+                tCity : null,
+                tCountry : null
               }
           },
         items : [
           {
           id: 1,
-          desc : undefined,
-          quantity : undefined,
-          rate : undefined,
-          amount : undefined,
+          desc : null,
+          quantity : null,
+          rate : null,
+          amount : null,
           tax : 10
         }
         ]
@@ -207,7 +207,7 @@ export default {
       this.fis.calculations.subTotal = 0
       this.fis.calculations.taxXed = 0
       this.fis.calculations.afterTax = 0
-      this.fis.info.sumAsText = undefined
+      this.fis.info.sumAsText = null
       this.fis.items.forEach((element) => {
         
         if(this.fis.info.universalTax) {
@@ -244,11 +244,11 @@ export default {
     addItem(){
       this.fis.items.push({
           id: this.fis.items.length+1,
-          desc : undefined,
-          quantity : undefined,
-          rate : undefined,
-          amount : undefined,
-          tax : undefined
+          desc : null,
+          quantity : null,
+          rate : null,
+          amount : null,
+          tax : null
       })
     },
     removeItem(id){
