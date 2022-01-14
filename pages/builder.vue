@@ -1,5 +1,6 @@
 <template>
   <section>
+    
     <div class="content">
       <div class="left">
         <Builder
@@ -9,7 +10,7 @@
           :darkMode="builderSettings.darkMode"
         />
       </div>
-      <div class="right">
+      <div class="right"  v-if="show.utilBar">
         <div class="logInBox">
           <h2>Create an account</h2>
           <p>Here is some benefits for a free account!</p>
@@ -58,6 +59,13 @@
         </div>
       </div>
     </div>
+    <div class="mobileMenu" @click="show.utilBar = !show.utilBar">
+     <div class="icon">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+     </div>
+    </div>
   </section>
 </template>
 
@@ -70,6 +78,9 @@ export default {
   name: 'BuilderPage',
   data() {
     return {
+      show : {
+        utilBar : false
+      },
       loading: {
         generatePDF: false,
       },
@@ -253,7 +264,7 @@ export default {
 section .content {
   display: flex;
   flex-direction: row;
-  gap: 165px;
+  gap: 25px;
   padding: 60px;
 }
 section .content div {
@@ -337,6 +348,38 @@ section .content .right .settings .container p {
   padding: 0.3rem 0;
   filter: invert(1);
   border-radius: 4px;
+}
+
+
+.mobileMenu{
+  /* get rid of it when desktop */
+  width: 55px;
+  height: 55px;
+  background: var(--base-color);
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  border-radius: 4px;
+  border: 2px solid white;
+  cursor: pointer;
+}
+
+.mobileMenu .icon{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+}
+
+.mobileMenu .icon .bar{
+  width: 80%;
+  height: 4px;
+  background: white;
+  border-radius: 999px;
 }
 </style>
 

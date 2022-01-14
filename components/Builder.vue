@@ -280,7 +280,7 @@ export default {
 form {
   min-height: 100vh;
   background: white;
-  width: 100%;
+  max-width: 100%;
   border-radius: 4px;
   box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.25);
   padding: 60px;
